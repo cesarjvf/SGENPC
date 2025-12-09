@@ -3,14 +3,14 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Generador Sing-box PC v18</title>
+    <title>Generador Sing-box PC v19</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
     
     <style>
         :root {
-            --primary-glow: 59, 130, 246;
+            --primary-glow: 59, 130, 246; /* Blue 500 */
             --bg-color: #0f172a;
             --text-main: #f8fafc;
             --text-muted: #94a3b8;
@@ -151,7 +151,6 @@
         body:not(.light-mode) .code-content { color: #93c5fd; }
         body.light-mode .code-content { color: #0f172a; }
 
-        /* Custom Radio Button for Domestic DNS */
         .segmented-control {
             display: flex;
             background: rgba(0,0,0,0.2);
@@ -249,7 +248,7 @@
                         </div>
                     </div>
                     <div id="mode-status-text" class="text-center text-xs text-blue-400 mt-4 font-mono opacity-80">
-                        TUN: 172.18.0.1/30 (MTU 1408)
+                        TUN Activado
                     </div>
                 </div>
 
@@ -260,13 +259,12 @@
                     
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                         
-                        <!-- Domestic DNS (New Triple Design) -->
+                        <!-- Domestic DNS -->
                         <div class="glass-option rounded-xl p-4 md:col-span-2 border border-blue-500/30">
                             <div class="flex justify-between items-center mb-3">
                                 <div class="font-semibold text-sm text-theme-main flex items-center gap-2">
                                     <i class="fa-solid fa-house-signal text-blue-400"></i> Domestic DNS
                                 </div>
-                                <!-- Segmented Control Switch (Triple) -->
                                 <div class="segmented-control w-64">
                                     <div id="dns-auto-btn" class="segment-btn active" onclick="setDomesticDns('auto')">Auto</div>
                                     <div id="dns-localhost-btn" class="segment-btn" onclick="setDomesticDns('localhost')">Localhost</div>
@@ -274,13 +272,11 @@
                                 </div>
                             </div>
                             
-                            <!-- Display Areas -->
                             <div id="domestic-dns-display-container" class="bg-blue-500/10 border border-blue-500/20 rounded-lg p-3 text-center">
                                 <span id="dns-display-value" class="text-blue-300 font-mono text-sm">192.168.134.242</span>
                                 <div id="dns-display-label" class="text-[10px] text-theme-muted mt-1">IP Default Gateway (Baja Latencia)</div>
                             </div>
 
-                            <!-- Manual Input -->
                             <div id="domestic-dns-manual-input" class="hidden">
                                 <div class="flex items-center gap-2 mb-2 bg-slate-900/50 p-2 rounded text-xs text-theme-muted font-mono">
                                     <i class="fa-solid fa-terminal text-green-400"></i> CMD: 
@@ -290,6 +286,44 @@
                                 <input type="text" id="domestic-dns-custom" 
                                     class="modern-input w-full rounded-lg p-2 text-sm text-center" 
                                     placeholder="Ej: 192.168.1.1">
+                            </div>
+                        </div>
+
+                        <!-- MTU (NEW) -->
+                        <div id="mtu-option-group" class="glass-option rounded-xl p-4">
+                            <div class="flex justify-between items-start mb-2">
+                                <div>
+                                    <div class="font-semibold text-sm text-theme-main">MTU (TUN)</div>
+                                    <div class="text-xs text-theme-muted">Tamaño Paquete</div>
+                                </div>
+                                <input type="checkbox" id="mtu-toggle" class="toggle-checkbox">
+                                <label for="mtu-toggle" class="toggle-switch"></label>
+                            </div>
+                            <div id="mtu-details" class="hidden mt-2">
+                                <input type="number" id="mtu-input" 
+                                    class="modern-input w-full rounded-lg p-2 text-sm text-center" 
+                                    value="1400" placeholder="1400">
+                                <div class="text-[10px] text-theme-muted mt-1 text-center">
+                                    * 1400-1500 recomendado para 4G
+                                </div>
+                            </div>
+                            <div id="mtu-default-text" class="text-[10px] text-theme-muted font-mono bg-theme-input p-2 rounded border border-gray-500/10">
+                                Default: 1400 (Seguro)
+                            </div>
+                        </div>
+
+                        <!-- Keep Alive -->
+                        <div id="keep-alive-option-group" class="glass-option rounded-xl p-4 disabled-option">
+                            <div class="flex justify-between items-start mb-2">
+                                <div>
+                                    <div class="font-semibold text-sm text-theme-main">Keep Alive</div>
+                                    <div class="text-xs text-theme-muted">gRPC Optimizado</div>
+                                </div>
+                                <input type="checkbox" id="keep-alive-toggle" class="toggle-checkbox" checked disabled>
+                                <label for="keep-alive-toggle" class="toggle-switch"></label>
+                            </div>
+                            <div class="text-[10px] text-theme-muted font-mono bg-theme-input p-2 rounded border border-gray-500/10">
+                                idle_timeout: 2h<br>ping_timeout: 60s
                             </div>
                         </div>
 
@@ -311,21 +345,6 @@
                             </select>
                         </div>
 
-                        <!-- Keep Alive -->
-                        <div id="keep-alive-option-group" class="glass-option rounded-xl p-4 disabled-option">
-                            <div class="flex justify-between items-start mb-2">
-                                <div>
-                                    <div class="font-semibold text-sm text-theme-main">Keep Alive</div>
-                                    <div class="text-xs text-theme-muted">gRPC Optimizado</div>
-                                </div>
-                                <input type="checkbox" id="keep-alive-toggle" class="toggle-checkbox" checked disabled>
-                                <label for="keep-alive-toggle" class="toggle-switch"></label>
-                            </div>
-                            <div class="text-[10px] text-theme-muted font-mono bg-theme-input p-2 rounded border border-gray-500/10">
-                                idle_timeout: 2h<br>ping_timeout: 60s
-                            </div>
-                        </div>
-
                         <!-- Insecure -->
                         <div id="insecure-option-group" class="glass-option rounded-xl p-4 disabled-option">
                             <div class="flex justify-between items-start mb-2">
@@ -338,6 +357,7 @@
                             </div>
                         </div>
 
+                        <!-- Fingerprint -->
                         <div id="client-fingerprint-option-group" class="glass-option rounded-xl p-4 disabled-option">
                             <div class="flex justify-between items-start mb-2">
                                 <div>
@@ -355,6 +375,7 @@
                             </div>
                         </div>
 
+                        <!-- ALPN -->
                         <div id="alpn-option-group" class="glass-option rounded-xl p-4 disabled-option">
                             <div class="flex justify-between items-start mb-2">
                                 <div>
@@ -434,9 +455,17 @@
         const tunBtn = document.getElementById('tun-btn');
         const proxyBtn = document.getElementById('proxy-btn'); 
         const modeStatusText = document.getElementById('mode-status-text');
+        const domesticDnsInput = document.getElementById('domestic-dns-input'); 
         const stackSelect = document.getElementById('stack-select'); 
         
-        // Domestic DNS UI References
+        // MTU Elements
+        const mtuOptionGroup = document.getElementById('mtu-option-group');
+        const mtuToggle = document.getElementById('mtu-toggle');
+        const mtuDetails = document.getElementById('mtu-details');
+        const mtuInput = document.getElementById('mtu-input');
+        const mtuDefaultText = document.getElementById('mtu-default-text');
+
+        // Domestic DNS UI
         const dnsAutoBtn = document.getElementById('dns-auto-btn');
         const dnsLocalhostBtn = document.getElementById('dns-localhost-btn');
         const dnsManualBtn = document.getElementById('dns-manual-btn');
@@ -450,8 +479,6 @@
 
         window.setDomesticDns = function(mode) {
             domesticDnsMode = mode;
-            
-            // Reset active classes
             [dnsAutoBtn, dnsLocalhostBtn, dnsManualBtn].forEach(btn => btn.classList.remove('active'));
 
             if (mode === 'auto') {
@@ -504,15 +531,30 @@
             if (mode === 'tun') {
                 tunBtn.classList.add('active');
                 proxyBtn.classList.remove('active');
-                modeStatusText.textContent = 'TUN: 172.18.0.1/30 (MTU 1408)';
+                modeStatusText.textContent = 'TUN: 172.18.0.1/30 (MTU Variable)';
+                
+                // Enable Stack
                 stackSelect.disabled = false;
                 stackSelect.parentElement.classList.remove('opacity-50');
+
+                // Enable MTU Group
+                mtuOptionGroup.classList.remove('disabled-option');
+                mtuToggle.disabled = false;
             } else {
                 proxyBtn.classList.add('active');
                 tunBtn.classList.remove('active');
                 modeStatusText.textContent = 'PROXY: 127.0.0.1:10808 (SOCKS/HTTP)';
-                stackSelect.disabled = true; // Stack only for TUN
+                
+                // Disable Stack
+                stackSelect.disabled = true;
                 stackSelect.parentElement.classList.add('opacity-50');
+
+                // Disable MTU Group
+                mtuOptionGroup.classList.add('disabled-option');
+                mtuToggle.disabled = true;
+                mtuToggle.checked = false;
+                mtuDetails.classList.add('hidden');
+                mtuDefaultText.classList.remove('hidden');
             }
         };
 
@@ -528,6 +570,17 @@
         }
         setupToggleLogic(alpnToggle, alpnDetails);
         setupToggleLogic(clientFingerprintToggle, clientFingerprintDetails);
+        
+        // MTU Custom Toggle Logic
+        mtuToggle.addEventListener('change', () => {
+            if (mtuToggle.checked) {
+                mtuDetails.classList.remove('hidden');
+                mtuDefaultText.classList.add('hidden');
+            } else {
+                mtuDetails.classList.add('hidden');
+                mtuDefaultText.classList.remove('hidden');
+            }
+        });
         
         function enableGroup(group, toggle) {
             group.classList.remove('disabled-option');
@@ -658,7 +711,6 @@
             statusContainer.innerHTML = message;
         }
 
-        // --- PARSING LOGIC ---
         function parseAndValidateLink(link, index) {
             const result = { proxy: null, errors: [], warnings: [] };
             try {
@@ -793,32 +845,22 @@
                 "detour": "proxy" 
             };
             
-            // Domestic DNS Logic (Localhost / Auto / Manual)
             let domesticDns;
             if (domesticDnsMode === 'localhost') {
-                 // Localhost: System DNS
-                 domesticDns = { "tag": "domestic_dns", "type": "local" }; // No detour direct here (safe)
+                 domesticDns = { "tag": "domestic_dns", "type": "local" }; 
             } else {
-                 // Auto or Manual IP
                  let finalIp = (domesticDnsMode === 'manual' && domesticIpInput) ? domesticIpInput : defaultDomesticIp;
-                 
                  if (!finalIp.includes('://') && finalIp !== 'local') {
                     finalIp = `udp://${finalIp}`;
                  }
                  domesticDns = { "tag": "domestic_dns", "address": finalIp, "detour": "direct" }; 
-                 // Note: Detour direct removed in previous strict version for safety, 
-                 // but standard practice for IP DNS is direct. If it fails, remove detour.
-                 // Re-adding detour: direct because user confirmed v2rayN uses it and works, 
-                 // BUT sing-box 1.12 might complain if it's redundant. 
-                 // FIX: Let's remove 'detour' for domestic IP to be safe and let routing handle it.
-                 delete domesticDns.detour; 
+                 delete domesticDns.detour; // Safe approach
             }
 
             const localDns = { "tag": "local", "type": "local" };
             
             const dnsServers = [remoteDns, domesticDns, localDns];
             if (!isDnsCustomEnabled) {
-                // Fallback
                 dnsServers.push({ "tag": "backup_dns", "address": "udp://8.8.4.4", "detour": "proxy" });
             }
 
@@ -846,16 +888,23 @@
                 }
             };
 
+            // MTU Logic
+            let finalMtu = 1400; // Default Safe
+            if (mtuToggle.checked) {
+                const val = parseInt(mtuInput.value);
+                if (!isNaN(val) && val > 0) finalMtu = val;
+            }
+
             if (selectedMode === 'tun') {
                 config.inbounds.push({
                     "type": "tun",
                     "tag": "tun-in",
                     "interface_name": "tun0",
                     "address": ["172.18.0.1/30"],
-                    "mtu": 1408,
+                    "mtu": finalMtu, // User or default MTU
                     "auto_route": true,
                     "strict_route": true,
-                    "stack": stackSelect.value, // User selected stack
+                    "stack": stackSelect.value, 
                     "sniff": true
                 });
             } else {
@@ -918,10 +967,6 @@
                         "enabled": true,
                         "fingerprint": clientFingerprintSelect.value
                     };
-                }
-
-                if (alpnToggle.checked) {
-                    outbound.tls.alpn = alpnSelect.value.split(',').map(s => s.trim());
                 }
 
                 if (p.security === 'reality') {
